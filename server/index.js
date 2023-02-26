@@ -2,6 +2,8 @@ import express from "express";
 import * as dotenv from "dotenv";
 import cors from "cors";
 
+import connectDB from "./mongodb/connect.js";
+
 dotenv.config(); // Load environment variables from .env file, where API keys and passwords are configured
 
 const app = express(); // Create Express server
@@ -13,9 +15,14 @@ app.get("/", async (req, res) => {
 }); // GET / route
 
 const startServer = async () => {
-  app.listen(8080, () =>
-    console.log("server has started on port http://localhost:8080")
-  );
+  try {
+    connectDB(process.env.MONGODB_URL);
+    app.listen(8080, () =>
+      console.log("server has started on port http://localhost:8080")
+    );
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 startServer();
